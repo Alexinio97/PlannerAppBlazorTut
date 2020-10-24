@@ -9,6 +9,7 @@ namespace PlannerApp.Shared.Models
         public string Message { get; set; }
         public bool IsSucces { get; set; }
         public string[] Errors { get; set; }
+        public Dictionary<string,string> UserInfo { get; set; }
         public DateTime? ExpiredDate { get; set; }
     }
 }

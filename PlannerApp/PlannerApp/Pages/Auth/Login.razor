@@ -1,0 +1,88 @@
+﻿@page "/auth/login"
+@layout AuthLayout
+
+@using PlannerApp.Shared.Models
+@inject AuthenticationService auth;
+@inject NavigationManager navigationManager; 
+
+
+<div class="row">
+    <div class="col-12">
+        <h2>Login</h2>
+
+        <EditForm Model="@loginModel" OnValidSubmit="LoginUser">
+            <RadzenCard>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <AlertMessage Message="@message" MessageType="@messageType" />
+
+                <ul>
+                    @foreach (var item in userInfo)
+                    {
+                        <li>@item.Key : @item.Value</li>
+                    }
+                </ul>
+
+                <label>Email </label>
+                <RadzenTextBox @bind-Value="loginModel.Email"></RadzenTextBox>
+
+
+                <label>Password</label>
+                <RadzenPassword @bind-Value="loginModel.Password"></RadzenPassword>
+
+                <hr />
+
+                <RadzenButton ButtonType="Radzen.ButtonType.Submit" Disabled="isBusy" Text="Login" ButtonStyle="Radzen.ButtonStyle.Primary"
+                              class="btn-block mr-2" />
+                <RadzenButton ButtonType="Radzen.ButtonType.Submit" Disabled="isBusy" Text="Register" ButtonStyle="Radzen.ButtonStyle.Primary"
+                              class="btn-block mr-2" Click="GoToRegister"/>
+            </RadzenCard>
+        </EditForm>
+
+    </div>
+</div>
+
+
+@code {
+    LoginRequest loginModel = new LoginRequest();
+
+    bool isBusy = false;
+    string message = string.Empty;
+
+    Models.AlertMessageType messageType = Models.AlertMessageType.Success;
+
+    Dictionary<string, string> userInfo = new Dictionary<string, string>();
+
+    public async Task LoginUser()
+    {
+        isBusy = true;
+
+        var response = await auth.LoginUserAsync(loginModel);
+
+        if(response == null)
+        {
+            message = "Response was null!";
+            messageType = Models.AlertMessageType.Error;
+            isBusy = false;
+            return;
+        }
+
+        if (response.IsSucces)
+        {
+            message = "Welcome to PlannerApp";
+            userInfo = response.UserInfo;
+            messageType = Models.AlertMessageType.Success;
+        }
+        else
+        {
+            message = response.Message;
+            messageType = Models.AlertMessageType.Error;
+        }
+        isBusy = false;
+    }
+
+    private void GoToRegister()
+    {
+        navigationManager.NavigateTo("/auth/register");
+    }
+}

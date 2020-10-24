@@ -34,7 +34,7 @@
                 <RadzenButton ButtonType="Radzen.ButtonType.Submit" Disabled="isBusy" Text="Register" ButtonStyle="Radzen.ButtonStyle.Primary"
                               class="btn-block mr-2" />
                 <RadzenButton ButtonType="Radzen.ButtonType.Submit" Disabled="isBusy" Text="Login" ButtonStyle="Radzen.ButtonStyle.Primary"
-                              class="btn-block mr-2" />
+                              class="btn-block mr-2" Click="NavigateToLogin" />
             </RadzenCard>
         </EditForm>
 
@@ -56,7 +56,15 @@
 
         var response = await auth.RegisterUserAsync(registerModel);
 
-        if(response.IsSucces)
+        if (response == null)
+        {
+            message = "Response was null!";
+            messageType = Models.AlertMessageType.Error;
+            isBusy = false;
+            return;
+        }
+
+        if (response.IsSucces)
         {
             message = response.Message;
             messageType = Models.AlertMessageType.Success;
@@ -67,5 +75,10 @@
             messageType = Models.AlertMessageType.Error;
         }
         isBusy = false;
+    }
+
+    private void NavigateToLogin()
+    {
+        navigationManager.NavigateTo("/auth/login");
     }
 }

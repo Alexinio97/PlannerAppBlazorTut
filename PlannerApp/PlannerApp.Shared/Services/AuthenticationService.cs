@@ -31,5 +31,19 @@ namespace PlannerApp.Shared.Services
                 return null;
             } 
         }
+
+        public async Task<UserManagerResponse> LoginUserAsync(LoginRequest request)
+        {
+            try
+            {
+                var response = await _client.PostAsync<UserManagerResponse>($"{_baseUrl}/api/auth/login", request);
+                return response.Result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception caught: " + ex.ToString());
+                return null;
+            }
+        }
     }
 }
