@@ -1,0 +1,71 @@
+﻿@page "/auth/register"
+@layout AuthLayout
+
+@using PlannerApp.Shared.Models
+@inject AuthenticationService auth;
+@inject NavigationManager navigationManager;
+
+<div class="row">
+    <div class="col-12">
+        <h2>Create new account</h2>
+        
+        <EditForm Model="@registerModel" OnValidSubmit="RegisterUser">
+            <RadzenCard>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <AlertMessage Message="@message" MessageType="@messageType"/>
+                <label>First Name</label>
+                <RadzenTextBox @bind-Value="registerModel.FirstName"></RadzenTextBox>
+
+                <label>Last Name</label>
+                <RadzenTextBox @bind-Value="registerModel.LastName"></RadzenTextBox>
+
+                <label>Email </label>
+                <RadzenTextBox @bind-Value="registerModel.Email"></RadzenTextBox>
+
+
+                <label>Password</label>
+                <RadzenPassword @bind-Value="registerModel.Password"></RadzenPassword>
+
+                <label>Confirm password</label>
+                <RadzenPassword @bind-Value="registerModel.ConfirmPassword"></RadzenPassword>
+                <hr />
+
+                <RadzenButton ButtonType="Radzen.ButtonType.Submit" Disabled="isBusy" Text="Register" ButtonStyle="Radzen.ButtonStyle.Primary"
+                              class="btn-block mr-2" />
+                <RadzenButton ButtonType="Radzen.ButtonType.Submit" Disabled="isBusy" Text="Login" ButtonStyle="Radzen.ButtonStyle.Primary"
+                              class="btn-block mr-2" />
+            </RadzenCard>
+        </EditForm>
+
+    </div>
+</div>
+
+
+@code {
+    RegisterRequest registerModel = new RegisterRequest();
+
+    bool isBusy = false;
+    string message = string.Empty;
+
+    Models.AlertMessageType messageType = Models.AlertMessageType.Success;
+
+    public async Task RegisterUser()
+    {
+        isBusy = true;
+
+        var response = await auth.RegisterUserAsync(registerModel);
+
+        if(response.IsSucces)
+        {
+            message = response.Message;
+            messageType = Models.AlertMessageType.Success;
+        }
+        else
+        {
+            message = response?.Errors?.FirstOrDefault() ?? response.Message;
+            messageType = Models.AlertMessageType.Error;
+        }
+        isBusy = false;
+    }
+}

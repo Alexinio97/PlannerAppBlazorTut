@@ -3,3 +3,7 @@
 ################################################################################
 
 /PlannerApp/PlannerApp/bin/Debug/netstandard2.1/wwwroot/_framework/_bin
+/PlannerApp/PlannerApp/bin/Debug/netstandard2.1
+/PlannerApp/PlannerApp/obj
+/PlannerApp/PlannerApp.Shared/bin/Debug/netstandard2.0
+/PlannerApp/PlannerApp.Shared/obj
